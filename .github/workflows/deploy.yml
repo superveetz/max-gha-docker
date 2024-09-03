@@ -11,19 +11,25 @@ jobs:
   test:
     environment: testing
     runs-on: ubuntu-latest
-    container: 
-      image: node:16
+    # container: 
+    #   image: node:16
     env:
       MONGODB_CONNECTION_PROTOCOL: mongodb+srv
       # Can use the service name if the job (this test job does) runs in a container
       # because GHA will automatically set up the docker network
-      MONGODB_CLUSTER_ADDRESS: mongodb 
+      # MONGODB_CLUSTER_ADDRESS: mongodb 
+
+      # When the job does not run in a container, you must connect the job to the service container 
+      # by IP/port
+      MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017
       MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
       MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
       PORT: 8080
     services:
       mongodb:
         image: mongo
+        ports:
+          - 27017:27017
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
